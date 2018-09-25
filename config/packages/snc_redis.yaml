@@ -1,0 +1,30 @@
+snc_redis:
+    clients:
+        cache:
+            type: predis
+            alias: cache #snc_redis.client_storage.driver
+            dsn: redis://127.0.0.1/2
+            logging: "%kernel.debug%"
+            options:
+                connection_timeout: 0
+                read_write_timeout: 30
+
+doctrine_cache:
+    providers:
+        redis_cache:
+            redis:
+                host: 127.0.0.1
+                port: 6379
+                database: 3
+        websocket_cache_client:
+            type: redis
+            alias: gos_web_socket.client_storage.predis.driver    
+# Define your clients here. The example below connects to database 0 of the default Redis server.
+#
+# See https://github.com/snc/SncRedisBundle/blob/master/Resources/doc/index.md for instructions on
+# how to configure the bundle.
+#
+#        default:
+#            type: predis
+#            alias: default
+#            dsn: "%env(REDIS_URL)%"

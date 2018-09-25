@@ -13,10 +13,6 @@ parameters:
     
     
 services:
-    # app_user.first_login:
-    #     class: App\EventListener\FirstLoginListener
-    #     arguments: ['@date']
-        
 
     my_user_provider:
         
@@ -69,7 +65,10 @@ services:
     
     app_game.topic:
         class: App\Utils\Topic\GameTopic
-    
+
+    app_player.topic:
+        class: App\Utils\Topic\PlayerTopic
+
     app_invitation.topic:
         class: App\Utils\Topic\InvitationTopic
 
@@ -78,11 +77,25 @@ services:
     #alias necessaire pour pouvoir appeler le service dans les differents topic.
     Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface: '@gos_web_socket.websocket.client_manipulator'
 
-    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+    # SessionHandler pour Socket (Liste joueur, stats)
+    # session.handler.pdo:
+    #     class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+    #     arguments: 
+    #         - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+    #         - {lock_mode: 0}
+
+    session.handler.pdo:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments:
             - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
             - {lock_mode: 0}
     
+    gos_web_scocket.client_storage.predis.driver:
+        class: App\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        
+        arguments:
+            - "@snc_redis.cache"
+            - "%web_socket_server.client_storage.prefix%" #(optionally)if you use prefix in gos_web_socket.yaml
 
     GameTopicMessage :
         class : App\Utils\GameTopicMessage

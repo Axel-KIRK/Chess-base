@@ -9,6 +9,10 @@ chat_private:
     handler:
         callback: 'chat.topic'
 
+player_topic:
+    channel: player
+    handler:
+        callback: 'player.topic'
 
 match_making:
     channel: matchmaking

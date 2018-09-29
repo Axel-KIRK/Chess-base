@@ -8,9 +8,13 @@
 
 {% block body %}
 
-{{include('main/_invitation.html.twig')}}
-  
-    
+{% if games != false %}
+Partie en cours : 
+{% for game in games %}
+<a href="{{ path('game', {id : game.id }) }}">lien</a>
+{% endfor %}
+{% endif %}
+
 
 <div class="row ">
   <div class="globalContainer col-12">
@@ -26,14 +30,19 @@
         <div id="matchmaking-container">
         <h4 class="titleMatchMaking"> Partie aléatoire :</h4> 
         <button class="makingButton btn btn-light" id="match-making">Trouver une partie</button>
+        <button class="makingButton btn btn-light d-none" id="match-making-cancel">Quitter la file</button>
         </div>
       </div>
 
       <div id="home-left" class="bg-dark mb-4 p-1 pr-2 pl-2">
         <h2 class="text-center font-weight-bold mt-2"> Latest News :</h2>
         <div class="lastNews p-3"> 
-          <h4 class="text-center font-weight-bold">{{ article.title}}</h4>
-          <p> {{article.body|raw}}</p>  
+
+            {% if article is not null %}
+            <h4 class="text-center font-weight-bold">{{ article.title}}</h4>
+            <p> {{article.body|raw}}</p>  
+            {% endif %}
+
         </div>
       </div>
     </div> 

@@ -10,8 +10,10 @@ use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer;
 use Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
+use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 
-class PlayerTopic implements TopicInterface , TopicPeriodicTimerInterface
+class PlayerTopic implements TopicInterface , TopicPeriodicTimerInterface, SecuredTopicInterface
 {
     protected $clientManipulator;
     protected $periodicTimer;
@@ -34,7 +36,13 @@ class PlayerTopic implements TopicInterface , TopicPeriodicTimerInterface
      * @return void
      */
 
-
+    public function secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    {      
+        $user = $this->clientManipulator->getClient($connection);
+        if (!is_object($user)){
+            throw new FirewallRejectionException();
+        }
+    }
 
     public function setPeriodicTimer(TopicPeriodicTimer $periodicTimer)
     {

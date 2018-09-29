@@ -33,7 +33,7 @@ class ArticleRepository extends ServiceEntityRepository
             ->orderBy('a.publishAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getSingleResult()
+            ->getOneOrNullResult()
             ;
     }
 

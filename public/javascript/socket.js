@@ -6,8 +6,7 @@ var app = {
         $('#invitationModal').on('hidden.bs.modal', app.refuseInvitation);
         $('#invitation-ok').on('click', app.acceptInvitation);
         $('#invitation-cancel').on('click', app.cancelInvitation);
-        
-
+        $('#match-making-cancel').on('click', app.leaveMatchMaking);
         $("#message_receiver").chosen();
 
 
@@ -26,7 +25,15 @@ var app = {
     },
  
     matchMaking: function () {
-        app.session.subscribe('matchmaking', function (uri, payload) {
+        app.session.subscribe('matchmaking', function (uri, payload){ 
+        
+        if('undefined' !== payload.error){
+            app.showMatchMakingMessage(payload.error);
+        }
+        if ('undefined' !== payload.confirm){
+                app.showMatchMakingMessage(payload.confirm);
+                app.switchMatchMakingButton();
+            }
             if (typeof payload.matchFound !== 'undefined') {
                 app.session.unsubscribe('matchmaking');
                 location.href = BASE_URL + payload.matchFound;
@@ -145,6 +152,29 @@ var app = {
             $('#invitation-invite').removeClass('d-none');
         }
 
+    },
+
+    showMatchMakingMessage :function($message){
+        $('#MatchMaking-message').remove();
+        $('.buttonContainer').append('<p id="MatchMaking-message">' + $message + '</p>');
+    },
+
+    switchMatchMakingButton: function ($message) {
+        if ($('#match-making-cancel').hasClass('d-none')) {
+            $('#match-making-cancel').removeClass('d-none');
+            $('#match-making').addClass('d-none');
+        } else {
+            $('#match-making-cancel').addClass('d-none');
+            $('#match-making').removeClass('d-none');
+        }
+
+    },
+
+    leaveMatchMaking : function() { 
+        console.log(app.session);
+        app.switchMatchMakingButton();
+        $('#MatchMaking-message').remove();
+        app.session.unsubscribe('matchmaking');
     }
 
 

@@ -7,8 +7,10 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
+use Gos\Bundle\WebSocketBundle\Topic\SecuredTopicInterface;
+use Gos\Bundle\WebSocketBundle\Server\Exception\FirewallRejectionException;
 
-class ChatTopic implements TopicInterface
+class ChatTopic implements TopicInterface, SecuredTopicInterface
 {
     protected $clientManipulator;
 
@@ -18,6 +20,14 @@ class ChatTopic implements TopicInterface
     public function __construct(ClientManipulatorInterface $clientManipulator)
     {
         $this->clientManipulator = $clientManipulator;
+    }
+
+    public function secure(ConnectionInterface $connection = null, Topic $topic, WampRequest $request, $payload = null, $exclude = null, $eligible = null, $provider = null)
+    {      
+        $user = $this->clientManipulator->getClient($connection);
+        if (!is_object($user)){
+            throw new FirewallRejectionException();
+        }
     }
             
     /**

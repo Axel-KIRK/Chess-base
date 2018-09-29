@@ -60,5 +60,7 @@ class GameTopicTools
         $this->doctrine->getManager()->remove($game);
 
         $this->doctrine->getManager()->flush();
+        $this->doctrine->getManager()->refresh($player);
+        $this->doctrine->getManager()->refresh($opponent);
     }
 }

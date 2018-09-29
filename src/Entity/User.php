@@ -102,7 +102,6 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->IsInGame = new ArrayCollection();
         $this->IsBlackInGame = new ArrayCollection();
         $this->FirstLogin = new \DateTime();
         $this->sentMessages = new ArrayCollection();
@@ -115,6 +114,28 @@ class User extends BaseUser
         $this->friendsWithMe = new \Doctrine\Common\Collections\ArrayCollection();
         $this->myFriends = new \Doctrine\Common\Collections\ArrayCollection();
 
+    }
+
+    public function isInGame()
+    {
+        if ($this->IsBlackInGame->isEmpty() && $this->IsWhiteInGame->isEmpty() ){
+            return false;
+        }
+        return true;
+    }
+
+    public function getGames(){
+        $games = [];
+        if ($this->IsBlackInGame->isEmpty() && $this->IsWhiteInGame->isEmpty() ){
+            return false;
+        }
+        foreach ($this->IsBlackInGame as $game) {
+            $games[] = $game;
+        }
+        foreach ($this->IsWhiteInGame as $game){
+            $games[] = $game;
+        }
+        return $games;
     }
 
     public function getId(): ?int

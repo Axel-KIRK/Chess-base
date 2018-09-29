@@ -154,4 +154,9 @@ class GameTopicMessage
     {
         $topic->broadcast(['movementList' => $movementList]);
     }
+
+    public function leaverTimer($topic, string $action)
+    {
+        $topic->broadcast(['timer' => $action]);
+    }
 }
